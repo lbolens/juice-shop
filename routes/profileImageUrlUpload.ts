@@ -26,7 +26,7 @@ export function profileImageUrlUpload () {
             throw new Error('url returned a non-OK status code or an empty body')
           }
           const ext = ['jpg', 'jpeg', 'png', 'svg', 'gif'].includes(url.split('.').slice(-1)[0].toLowerCase()) ? url.split('.').slice(-1)[0].toLowerCase() : 'jpg'
-          const fileStream = fs.createWriteStream(`frontend/dist/frontend/assets/public/images/uploads/${loggedInUser.data.id}.${ext}`, { flags: 'w' })
+          const fileStream = fs.createWriteStream(path.join('frontend/dist/frontend/assets/public/images/uploads', `${loggedInUser.data.id}.${ext}`), { flags: 'w' })
           await finished(Readable.fromWeb(response.body as any).pipe(fileStream))
           const user = await UserModel.findByPk(loggedInUser.data.id)
           await user?.update({ profileImage: `/assets/public/images/uploads/${loggedInUser.data.id}.${ext}` })

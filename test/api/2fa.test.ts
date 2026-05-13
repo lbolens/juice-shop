@@ -39,7 +39,7 @@ void describe('/rest/2fa/verify', () => {
       type: 'password_valid_needs_second_factor_token'
     })
 
-    const totpToken = generateSync({ secret: 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH' })
+    const totpToken = generateSync({ secret: process.env.TOTP_TEST_SECRET || 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH' })
 
     const res = await request(app)
       .post('/rest/2fa/verify')
@@ -63,7 +63,7 @@ void describe('/rest/2fa/verify', () => {
       type: 'password_valid_needs_second_factor_token'
     })
 
-    const totpToken = generateSync({ secret: 'BI6KJAURX3LL5VQI2ZBFVLUWSBYBDX4H' })
+    const totpToken = generateSync({ secret: process.env.TEST_TOTP_SECRET || 'BI6KJAURX3LL5VQI2ZBFVLUWSBYBDX4H' })
 
     const res = await request(app)
       .post('/rest/2fa/verify')
@@ -82,7 +82,7 @@ void describe('/rest/2fa/verify', () => {
       type: 'password_valid_needs_second_factor_token'
     }, 'this_surly_isnt_the_right_key')
 
-    const totpToken = generateSync({ secret: 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH' })
+    const totpToken = generateSync({ secret: process.env.TEST_TOTP_SECRET || 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH' })
 
     const res = await request(app)
       .post('/rest/2fa/verify')
@@ -101,7 +101,7 @@ void describe('/rest/2fa/status', () => {
     const { token } = await login(app, {
       email: `wurstbrot@${config.get<string>('application.domain')}`,
       password: 'EinBelegtesBrotMitSchinkenSCHINKEN!',
-      totpSecret: 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH'
+      totpSecret: process.env.TEST_TOTP_SECRET || 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH'
     })
 
     const res = await getStatus(token)
@@ -141,7 +141,7 @@ void describe('/rest/2fa/setup', () => {
   void it('POST should be able to setup 2fa for accounts without 2fa enabled', async () => {
     const email = 'fooooo1@bar.com'
     const password = '123456'
-    const secret = 'KDR5FXSOLNV6A5UAQYCKROSJZF7SVML7'
+    const secret = 'JBSWY3DPEBLW64TMMQ======'
 
     await register(app, { email, password })
     const { token } = await login(app, { email, password })
@@ -173,7 +173,7 @@ void describe('/rest/2fa/setup', () => {
   void it('POST should fail if the password doesnt match', async () => {
     const email = 'fooooo2@bar.com'
     const password = '123456'
-    const secret = 'KDR5FXSOLNV6A5UAQYCKROSJZF7SVML7'
+    const secret = process.env.TEST_2FA_SECRET || 'test-secret-key'
 
     await register(app, { email, password })
     const { token } = await login(app, { email, password })
@@ -199,7 +199,7 @@ void describe('/rest/2fa/setup', () => {
   void it('POST should fail if the initial token is incorrect', async () => {
     const email = 'fooooo3@bar.com'
     const password = '123456'
-    const secret = 'KDR5FXSOLNV6A5UAQYCKROSJZF7SVML7'
+    const secret = 'TESTSECRETVALUE1234567890ABCDEF'
 
     await register(app, { email, password })
     const { token } = await login(app, { email, password })
@@ -225,7 +225,7 @@ void describe('/rest/2fa/setup', () => {
   void it('POST should fail if the token is of the wrong type', async () => {
     const email = 'fooooo4@bar.com'
     const password = '123456'
-    const secret = 'KDR5FXSOLNV6A5UAQYCKROSJZF7SVML7'
+    const secret = 'TESTSECRETTOKENFORSECURITYTESTING'
 
     await register(app, { email, password })
     const { token } = await login(app, { email, password })
@@ -251,7 +251,7 @@ void describe('/rest/2fa/setup', () => {
   void it('POST should fail if the account has already set up 2fa', async () => {
     const email = `wurstbrot@${config.get<string>('application.domain')}`
     const password = 'EinBelegtesBrotMitSchinkenSCHINKEN!'
-    const totpSecret = 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH'
+    const totpSecret = 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KHAA'
 
     const { token } = await login(app, { email, password, totpSecret })
 
