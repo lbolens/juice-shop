@@ -268,7 +268,7 @@ void describe('/rest/user/whoami', () => {
   void it('GET who-am-i request returns nothing on broken auth token', async () => {
     const res = await request(app)
       .get('/rest/user/whoami')
-      .set({ Authorization: 'BoarBeatsBear' })
+      .set({ Authorization: 'Bearer InvalidToken' })
     assert.equal(res.status, 200)
     assert.ok(res.headers['content-type']?.includes('application/json'))
     assert.deepEqual(res.body.user, {})
